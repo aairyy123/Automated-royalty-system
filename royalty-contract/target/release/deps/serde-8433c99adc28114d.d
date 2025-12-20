@@ -1,0 +1,14 @@
+D:\Royalty-System\soroban-royalty-system\royalty-contract\target\release\deps\serde-8433c99adc28114d.d: C:\Users\fmpie\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\lib.rs C:\Users\fmpie\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\integer128.rs C:\Users\fmpie\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\private\mod.rs C:\Users\fmpie\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\private\de.rs C:\Users\fmpie\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\private\ser.rs D:\Royalty-System\soroban-royalty-system\royalty-contract\target\release\build\serde-062fc5c5f3ea24a4\out/private.rs
+
+D:\Royalty-System\soroban-royalty-system\royalty-contract\target\release\deps\libserde-8433c99adc28114d.rlib: C:\Users\fmpie\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\lib.rs C:\Users\fmpie\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\integer128.rs C:\Users\fmpie\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\private\mod.rs C:\Users\fmpie\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\private\de.rs C:\Users\fmpie\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\private\ser.rs D:\Royalty-System\soroban-royalty-system\royalty-contract\target\release\build\serde-062fc5c5f3ea24a4\out/private.rs
+
+D:\Royalty-System\soroban-royalty-system\royalty-contract\target\release\deps\libserde-8433c99adc28114d.rmeta: C:\Users\fmpie\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\lib.rs C:\Users\fmpie\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\integer128.rs C:\Users\fmpie\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\private\mod.rs C:\Users\fmpie\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\private\de.rs C:\Users\fmpie\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\private\ser.rs D:\Royalty-System\soroban-royalty-system\royalty-contract\target\release\build\serde-062fc5c5f3ea24a4\out/private.rs
+
+C:\Users\fmpie\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\lib.rs:
+C:\Users\fmpie\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\integer128.rs:
+C:\Users\fmpie\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\private\mod.rs:
+C:\Users\fmpie\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\private\de.rs:
+C:\Users\fmpie\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\private\ser.rs:
+D:\Royalty-System\soroban-royalty-system\royalty-contract\target\release\build\serde-062fc5c5f3ea24a4\out/private.rs:
+
+# env-dep:OUT_DIR=D:\\Royalty-System\\soroban-royalty-system\\royalty-contract\\target\\release\\build\\serde-062fc5c5f3ea24a4\\out
