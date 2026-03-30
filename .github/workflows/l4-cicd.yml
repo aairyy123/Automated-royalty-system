@@ -1,0 +1,219 @@
+name: L4 Complete CI/CD Pipeline
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+  workflow_dispatch:
+
+concurrency:
+  group: l4-cicd-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  frontend_ci:
+    name: Frontend CI
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: royalty-frontend
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+          cache-dependency-path: royalty-frontend/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build frontend
+        run: npm run build
+
+      - name: Upload frontend build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-build
+          path: royalty-frontend/build
+          if-no-files-found: error
+
+  backend_ci:
+    name: Backend CI + DB Init
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+          cache-dependency-path: backend/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Validate backend syntax
+        run: node --check server.js
+
+      - name: Validate DB bootstrap
+        run: node db.js
+
+      - name: Upload DB schema evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-db-evidence
+          path: backend/royalty.db
+          if-no-files-found: error
+
+  js_client_ci:
+    name: JS Client CI
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: js-client
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+          cache-dependency-path: js-client/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Validate JS client syntax
+        run: node --check pay.js
+
+  contract_ci:
+    name: Smart Contract CI
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: royalty-contract
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Rust cache
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: royalty-contract
+
+      - name: Check contract workspace
+        run: cargo check --workspace
+
+      - name: Test contract workspace
+        run: cargo test --workspace
+
+  cd_bundle:
+    name: CD Package (Main)
+    runs-on: ubuntu-latest
+    needs: [frontend_ci, backend_ci, js_client_ci, contract_ci]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download frontend build
+        uses: actions/download-artifact@v4
+        with:
+          name: frontend-build
+          path: dist/frontend-build
+
+      - name: Create deployment structure
+        run: |
+          mkdir -p dist/backend dist/js-client dist/contract dist/deploy
+
+          cp backend/server.js dist/backend/
+          cp backend/db.js dist/backend/
+          cp backend/package.json dist/backend/
+          cp backend/package-lock.json dist/backend/
+
+          cp js-client/pay.js dist/js-client/
+          cp js-client/config.js dist/js-client/
+          cp js-client/package.json dist/js-client/
+          cp js-client/package-lock.json dist/js-client/
+
+          cp -r royalty-contract/contracts dist/contract/
+          cp royalty-contract/Cargo.toml dist/contract/
+          cp royalty-contract/README.md dist/contract/
+
+      - name: Add deployment env and DB docs
+        run: |
+          cat <<'EOF' > dist/deploy/backend.env.example
+          # Backend runtime configuration
+          PINATA_API_KEY=
+          PINATA_SECRET_API_KEY=
+          SOROBAN_RPC=
+          CONTRACT_ID=
+          NATIVE_TOKEN_ADDRESS=
+          # Optional - if you externalize db path in future
+          DB_FILE=./royalty.db
+          EOF
+
+          cat <<'EOF' > dist/deploy/database-schema.sql
+          CREATE TABLE IF NOT EXISTS contents (
+            cid TEXT PRIMARY KEY,
+            creator TEXT NOT NULL,
+            username TEXT,
+            title TEXT,
+            hashtags TEXT,
+            content_type TEXT,
+            royalty_percent INTEGER,
+            created_at TEXT
+          );
+
+          CREATE TABLE IF NOT EXISTS payments (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            cid TEXT NOT NULL,
+            payer TEXT NOT NULL,
+            amount INTEGER NOT NULL,
+            paid_at TEXT NOT NULL
+          );
+          EOF
+
+          cat <<'EOF' > dist/deploy/README.md
+          L4 deployment package contents:
+          - frontend-build/ -> production frontend build
+          - backend/ -> backend runtime code (no secrets included)
+          - js-client/ -> client scripts
+          - contract/ -> soroban contract workspace files
+          - deploy/backend.env.example -> required env keys
+          - deploy/database-schema.sql -> database schema reference
+          EOF
+
+      - name: Generate bundle checksum
+        run: |
+          tar -czf l4-deploy-bundle.tar.gz dist
+          sha256sum l4-deploy-bundle.tar.gz > l4-deploy-bundle.sha256
+
+      - name: Upload deploy bundle artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: l4-deploy-bundle
+          path: |
+            l4-deploy-bundle.tar.gz
+            l4-deploy-bundle.sha256
+          if-no-files-found: error

@@ -41,7 +41,7 @@ export default function UploadContent({ onUploaded }) {
 
       {cid && (
         <p>
-          ✅ CID: <code>{cid}</code>
+          CID: <code>{cid}</code>
         </p>
       )}
     </div>

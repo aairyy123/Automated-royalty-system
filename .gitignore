@@ -1,0 +1,57 @@
+# ------------------------------
+# Secrets and environment files
+# ------------------------------
+**/.env
+**/.env.*
+!.env.example
+!**/.env.example
+
+# ------------------------------
+# Node.js / frontend / backend
+# ------------------------------
+**/node_modules/
+**/npm-debug.log*
+**/yarn-debug.log*
+**/yarn-error.log*
+**/pnpm-debug.log*
+
+# Build outputs
+**/build/
+**/dist/
+**/.next/
+**/.cache/
+
+# ------------------------------
+# Databases and local runtime data
+# ------------------------------
+**/*.db
+**/*.sqlite
+**/*.sqlite3
+**/*.db-journal
+**/*.db-wal
+**/*.db-shm
+
+# ------------------------------
+# Rust / Soroban artifacts
+# ------------------------------
+**/target/
+**/*.wasm
+
+# ------------------------------
+# Logs and temporary files
+# ------------------------------
+**/*.log
+**/tmp/
+**/temp/
+*.pid
+
+# ------------------------------
+# OS / editor files
+# ------------------------------
+.DS_Store
+Thumbs.db
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+*.swp
+*.swo
